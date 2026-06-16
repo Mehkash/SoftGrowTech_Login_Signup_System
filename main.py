@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
-# ---------- Blue Theme Colors ----------
 BG_COLOR = "#eaf6ff"
 CARD_COLOR = "#ffffff"
 HEADING_COLOR = "#1b4965"
@@ -14,7 +13,6 @@ window.title("Login & Signup System")
 window.geometry("420x460")
 window.config(bg=BG_COLOR)
 
-# Using ttk with "clam" theme so the button colors actually show up on macOS
 style = ttk.Style()
 style.theme_use("clam")
 style.configure("Blue.TButton",
@@ -25,7 +23,6 @@ style.configure("Blue.TButton",
                 borderwidth=0)
 style.map("Blue.TButton", background=[("active", BTN_HOVER)])
 
-# Card-style box centered in the window
 card = tk.Frame(window, bg=CARD_COLOR, padx=30, pady=30,
                  highlightbackground=BTN_COLOR, highlightthickness=2)
 card.place(relx=0.5, rely=0.5, anchor="center")
