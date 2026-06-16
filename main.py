@@ -1,52 +1,99 @@
-# Login and Signup System
+import tkinter as tk
+from tkinter import ttk, messagebox
 
-while True:
-    print("\n===== Login & Signup System =====")
-    print("1. Signup")
-    print("2. Login")
-    print("3. Exit")
+# ---------- Blue Theme Colors ----------
+BG_COLOR = "#eaf6ff"
+CARD_COLOR = "#ffffff"
+HEADING_COLOR = "#1b4965"
+BTN_COLOR = "#5fa8d3"
+BTN_HOVER = "#1b4965"
+TEXT_COLOR = "#1b4965"
 
-    choice = input("Enter your choice: ")
+window = tk.Tk()
+window.title("Login & Signup System")
+window.geometry("420x460")
+window.config(bg=BG_COLOR)
 
-    if choice == "1":
-        username = input("Enter username: ")
-        password = input("Enter password: ")
+# Using ttk with "clam" theme so the button colors actually show up on macOS
+style = ttk.Style()
+style.theme_use("clam")
+style.configure("Blue.TButton",
+                background=BTN_COLOR,
+                foreground="white",
+                font=("Arial", 12, "bold"),
+                padding=10,
+                borderwidth=0)
+style.map("Blue.TButton", background=[("active", BTN_HOVER)])
 
-        file = open("users.txt", "a")
-        file.write(username + "," + password + "\n")
+# Card-style box centered in the window
+card = tk.Frame(window, bg=CARD_COLOR, padx=30, pady=30,
+                 highlightbackground=BTN_COLOR, highlightthickness=2)
+card.place(relx=0.5, rely=0.5, anchor="center")
+
+heading = tk.Label(card, text="Welcome", font=("Arial", 24, "bold"), bg=CARD_COLOR, fg=HEADING_COLOR)
+heading.grid(row=0, column=0, columnspan=2, pady=(0, 20))
+
+tk.Label(card, text="Username", font=("Arial", 12), bg=CARD_COLOR, fg=TEXT_COLOR).grid(row=1, column=0, columnspan=2, sticky="w")
+username_entry = tk.Entry(card, font=("Arial", 12), width=30, relief="solid", bd=1)
+username_entry.grid(row=2, column=0, columnspan=2, pady=(2, 15))
+
+tk.Label(card, text="Password", font=("Arial", 12), bg=CARD_COLOR, fg=TEXT_COLOR).grid(row=3, column=0, columnspan=2, sticky="w")
+password_entry = tk.Entry(card, font=("Arial", 12), width=30, show="*", relief="solid", bd=1)
+password_entry.grid(row=4, column=0, columnspan=2, pady=(2, 20))
+
+
+def signup():
+    username = username_entry.get()
+    password = password_entry.get()
+
+    if username == "" or password == "":
+        messagebox.showerror("Error", "Please fill both fields")
+        return
+
+    file = open("users.txt", "a")
+    file.write(username + "," + password + "\n")
+    file.close()
+
+    messagebox.showinfo("Success", "Signup Successful!")
+
+    username_entry.delete(0, tk.END)
+    password_entry.delete(0, tk.END)
+
+
+def login():
+    username = username_entry.get()
+    password = password_entry.get()
+
+    if username == "" or password == "":
+        messagebox.showerror("Error", "Please fill both fields")
+        return
+
+    found = False
+
+    try:
+        file = open("users.txt", "r")
+        users = file.readlines()
         file.close()
 
-        print("Signup Successful!")
+        for line in users:
+            data = line.strip().split(",")
+            if username == data[0] and password == data[1]:
+                found = True
+                break
 
-    elif choice == "2":
-        username = input("Enter username: ")
-        password = input("Enter password: ")
+        if found:
+            messagebox.showinfo("Success", "Login Successful!")
+        else:
+            messagebox.showerror("Error", "Invalid Username or Password")
 
-        found = False
+    except:
+        messagebox.showerror("Error", "No users found. Please signup first")
 
-        try:
-            file = open("users.txt", "r")
-            users = file.readlines()
-            file.close()
 
-            for user in users:
-                data = user.strip().split(",")
+signup_btn = ttk.Button(card, text="Signup", style="Blue.TButton", command=signup)
+signup_btn.grid(row=5, column=0, padx=8, pady=5, sticky="ew")
 
-                if username == data[0] and password == data[1]:
-                    found = True
-                    break
+login_btn = ttk.Button(card, text="Login", style="Blue.TButton", command=login)
+login_btn.grid(row=5, column=1, padx=8, pady=5, sticky="ew")
 
-            if found:
-                print("Login Successful!")
-            else:
-                print("Invalid Username or Password!")
-
-        except:
-            print("No users found.")
-
-    elif choice == "3":
-        print("Program Ended.")
-        break
-
-    else:
-        print("Invalid Choice!")
+window.mainloop()
